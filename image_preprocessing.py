@@ -264,6 +264,7 @@ def normalize_tiles_3d(in_dict, nodata_vals=[], is_training=False):
         arr_dict['imagery'] = norm_dict['imagery'][:, None, :, :, :]
         return arr_dict
 
+
 """
 if __name__ == '__main__':
     dummy_filename = 'C:\\Users\\dd\\Pictures\\DSC_0084.jpg'

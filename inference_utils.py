@@ -14,12 +14,18 @@ def combine_tiles_1d(model, data, t_shp, overlap, out_dims):
 
     crp_dims = out_dims['cropped_shape']
     tiles_num = out_dims['tiles_num']
+    num_pixels = tiles_num[0] * tiles_num[1]
+    print_interval = int(num_pixels/100)
 
     out_arr = np.empty((crp_dims[0], crp_dims[1]), np.uint8)
     print(f'Combining tiles to shape {crp_dims}')
+    print('Model application at:')
 
     loader = torch.utils.data.DataLoader(data, batch_size=1)
     for idx, tile in enumerate(loader):
+        if idx % print_interval == 0:
+            print(f'{idx/num_pixels*100:.0f} %')
+
         tile_class = classify_tile(model, tile)
 
         xmin = idx // tiles_num[1]
