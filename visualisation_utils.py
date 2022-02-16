@@ -4,9 +4,10 @@ import torch
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
-CMAP = ListedColormap(['white', 'red', 'green', 'yellow', 'orange', 'pink',
-                       'blue', 'cyan', 'black', 'grey'])
-CLASS_NAMES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
+COLOR_LIST = ['white', 'red', 'green', 'yellow', 'orange', 'pink',
+              'blue', 'cyan', 'black', 'grey']
+CMAP = ListedColormap(COLOR_LIST)
+CLASS_NAMES = ['No Data', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
 
 
 def _image_show(raster, title='Natural color composite'):
@@ -32,8 +33,9 @@ def show_img_ref(hs_img, gt_img):
     plt.subplot(1, 2, 2)
     _class_show(gt_img, 'Reference data')
 
-    for i in CLASS_NAMES:
-        plt.plot(0, 0, 's', label=i)
+    for label, color in zip(CLASS_NAMES, COLOR_LIST):
+        plt.plot(0, 0, 's', label=label,
+                 color=color, markeredgecolor='black')
     plt.legend()
 
 
@@ -80,8 +82,9 @@ def show_classified(hs_img, gt_img, class_img):
     plt.subplot(1, 3, 2)
     _class_show(gt_img, 'Reference data')
 
-    for i in CLASS_NAMES:
-        plt.plot(0, 0, 's', label=i)
+    for label, color in zip(CLASS_NAMES, COLOR_LIST):
+        plt.plot(0, 0, 's', label=label,
+                 color=color, markeredgecolor='black')
     plt.legend()
 
     plt.subplot(1, 3, 3)
