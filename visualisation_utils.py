@@ -3,11 +3,18 @@ import numpy as np
 import torch
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
+from time import gmtime, strftime
 
 COLOR_LIST = ['white', 'red', 'green', 'yellow', 'orange', 'pink',
               'blue', 'cyan', 'black', 'grey']
 CMAP = ListedColormap(COLOR_LIST)
-CLASS_NAMES = ['No Data', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
+CLASS_NAMES = ['No Data', 'af', 'afs', 'bor', 'desch', 'klec', 'nard', 'sut',
+               'vres', 'vyfuk']
+CLASS_NAMES = ['No Data', 'vyfoukávané alpinské trávníky',
+               'vyfoukávané alpinské trávníky',
+               'subalpínská brusnicová vegetace', 'metlice trsnatá',
+               'kosodřevina', 'smilka tuhá', 'kamenná moře',
+               'alpínská vřesoviště', 'vyfoukávané alpinské trávníky']
 
 
 def _image_show(raster, title='Natural color composite'):
@@ -52,10 +59,10 @@ def show_spectral_curve(tile_dict, tile_num,
     else:
         print('The input data is in an incompatible shape.')
 
-    plt.plot(x, y, label=f'class #{lbl}')
+    plt.plot(x, y, label=f'{CLASS_NAMES[lbl]}')
     plt.title(f'{title} {tile_num}')
     plt.xlabel('Wavelength [nm]')
-    plt.legend()
+    plt.legend(bbox_to_anchor=(0.5, 0.89), loc='lower center')
 
 
 def show_augment_spectral(tile_dict, tile_num, aug_funct):
@@ -71,6 +78,35 @@ def show_augment_spectral(tile_dict, tile_num, aug_funct):
     aug_dict = {'imagery': aug_obs, 'reference': aug_gt}
     show_spectral_curve(aug_dict, tile_num,
                         title='Augmented spectral curve for pixel #')
+
+
+def show_augment_spatial(tile_dict, tile_num, aug_funct):
+    """Show a figure of the original and the augmented RGB composite."""
+    img_rgb = tile_dict['imagery'][tile_num, [25, 15, 5], :, :]
+    img_rgb_transposed = img_rgb.transpose((1, 2, 0))
+    tile_gt = tile_dict['reference'][tile_num, :, :]
+    plt.figure(figsize=[15, 5])
+
+    plt.subplot(1, 3, 1)
+    _image_show(img_rgb_transposed*3000, title='Original RGB composite')
+
+    plt.subplot(1, 3, 2)
+    img_hs = tile_dict['imagery'][tile_num, :, :, :]
+    img_augmented, _ = aug_funct(torch.from_numpy(img_hs),
+                                 torch.from_numpy(tile_gt[None, :, :]))
+    print(img_augmented.shape)
+    img_augmented_np = np.array(img_augmented)
+    img_aug_trans = img_augmented_np[0, [25, 15, 5], :, :].transpose(1, 2, 0)
+
+    _image_show(np.array(img_aug_trans)*3000, title='Augmented RGB composite')
+
+    plt.subplot(1, 3, 3)
+    _class_show(tile_gt, 'Original reference data')
+
+    for label, color in zip(CLASS_NAMES, COLOR_LIST):
+        plt.plot(0, 0, 's', label=label,
+                 color=color, markeredgecolor='black')
+    plt.legend()
 
 
 def show_classified(hs_img, gt_img, class_img):
@@ -89,3 +125,10 @@ def show_classified(hs_img, gt_img, class_img):
 
     plt.subplot(1, 3, 3)
     _class_show(class_img, 'Classified data')
+
+
+def sec_to_hms(sec):
+    """Convert seconds to hours, minutes, seconds."""
+    ty_res = gmtime(sec)
+    res = strftime("%Hh, %Mm, %Ss", ty_res)
+    return str(res)
