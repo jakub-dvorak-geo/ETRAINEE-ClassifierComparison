@@ -1,7 +1,6 @@
 """Preprocess imagery in RAM for use in convolutional neural nets."""
 import numpy as np
 from osgeo import gdal
-import imageio
 
 
 class Image_reader:
@@ -266,6 +265,7 @@ def normalize_tiles_3d(in_dict, nodata_vals=[], is_training=False):
         return arr_dict
 
 
+"""
 if __name__ == '__main__':
     dummy_filename = 'C:\\Users\\dd\\Pictures\\DSC_0084.jpg'
     dummy_arr = imageio.imread(dummy_filename)  # .astype(np.float32)
@@ -278,3 +278,4 @@ if __name__ == '__main__':
     print(dummy_crop.shape)
     dummy_tiles = dummy_dataset.tile_image()
     print(dummy_tiles.shape)
+"""
