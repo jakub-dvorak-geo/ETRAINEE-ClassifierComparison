@@ -1,8 +1,8 @@
 # Instalace a příprava prostředí
 
-V tomto návodu je popsána příprava pro Windows. Pro MacOS/Linux lze postupovat obdobně, pouze...
+V tomto návodu je popsána příprava pro Windows. Pro MacOS/Linux lze postupovat obdobně, pouze může být nutné zvolit jiný postup pro instalaci GDAL API pro Python.
 
-Celkově lze přípravu rozdělit na několik částí, jestliže už máte nějaké zkušenosti s prací v pythonu, můžete pravděpodobně přeskoči k instalaci PyTorch:
+Celkově lze přípravu rozdělit na několik částí, jestliže už máte nějaké zkušenosti s prací v Pythonu, můžete pravděpodobně přeskočit k instalaci PyTorch:
 
 - Instalace Pythonu
 - Nastavení virtuálního prostředí (volitelné)
@@ -22,7 +22,7 @@ python3
 ```
 Měl by se spustit Python 3, podobně jako na obrázku: ![Python spuštěný v příkazové řádce](img/cli_python3.png "Python spuštěný v příkazové řádce")
 
-Jestliže vhodný Python ještě nemáte, doporučujeme ho nainstalovat skrze balíček miniconda s Python ve verzi 3.9 z webu [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html).
+Jestliže Python ve verzi 3 ještě nemáte, doporučujeme ho nainstalovat skrze balíček miniconda s Python ve verzi 3.9 z webu [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html).
 
 ## Nastavení virtuálního prostředí (volitelné)
 V případě že pracujete na více projektech, doporučujeme vytvořit si pro tento kurz samostatné virtuální prostředí. Zabráníte tím tomu, aby ve vašem prostředí vznikl nepořádek, nebo dokonce konflikt mezi některými knihovnami. Nejde o nutný krok, ovšem v případě potřeby můžete virtuální prostředí jednoduše vytvořit prostřednictvím balíčku [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands) nebo [venv](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/).
