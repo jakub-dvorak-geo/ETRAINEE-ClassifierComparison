@@ -9,6 +9,7 @@ Celkově lze přípravu rozdělit na několik částí, jestliže už máte něj
 - Instalace PyTorch
 - Instalace GDAL API pro Python
 - Instalace zbývajících externích knihoven
+- Spuštění prostředí Jupyter notebook
 
 ## Instalace Pythonu
 Nutná pouze pokud již nemáte vhodný Python. Toto lze vyzkoušet otevřením příkazové řadky a spuštěním příkazu
@@ -19,7 +20,7 @@ nebo
 ```sh
 python3
 ```
-. Měl by se spustit Python 3, podobně jako na obrázku: [img/cli_python3.png]
+Měl by se spustit Python 3, podobně jako na obrázku: ![Python spuštěný v příkazové řádce](img/cli_python3.png "Python spuštěný v příkazové řádce")
 
 Jestliže vhodný Python ještě nemáte, doporučuji ho nainstalovat skrze balíček miniconda s Python ve verzi 3.9 z webu [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html).
 
@@ -44,7 +45,9 @@ conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
 V závislosti na Vašem oblíbeném správci balíčků nainstalujte GDAL s pomocí jednoho z těchto návodů:
 
 pip - [https://opensourceoptions.com/blog/how-to-install-gdal-for-python-with-pip-on-windows/](https://opensourceoptions.com/blog/how-to-install-gdal-for-python-with-pip-on-windows/)
+
 nebo
+
 conda - [https://opensourceoptions.com/blog/how-to-install-gdal-with-anaconda/](https://opensourceoptions.com/blog/how-to-install-gdal-with-anaconda/)
 
 ## Instalace zbývajících externích knihoven
@@ -65,3 +68,6 @@ or
 ```sh
 conda install <název knihovny>
 ```
+
+## Spuštění prostředí Jupyter notebook
+Prostředí juptyter notebooků lze spustit skrze
