@@ -87,28 +87,61 @@ def show_augment_spatial(tile_dict, tile_num, aug_funct):
     img_rgb = tile_dict['imagery'][tile_num, [25, 15, 5], :, :]
     img_rgb_transposed = img_rgb.transpose((1, 2, 0))
     tile_gt = tile_dict['reference'][tile_num, :, :]
-    plt.figure(figsize=[15, 5])
+    plt.figure(figsize=[20, 5])
 
-    plt.subplot(1, 3, 1)
-    _image_show(img_rgb_transposed*3000, title='Original RGB composite')
+    plt.subplot(1, 4, 1)
+    _image_show(img_rgb_transposed*20000, title='Original RGB composite')
 
-    plt.subplot(1, 3, 2)
+    plt.subplot(1, 4, 2)
     img_hs = tile_dict['imagery'][tile_num, :, :, :]
-    img_augmented, _ = aug_funct(torch.from_numpy(img_hs),
+    img_augmented, gt_augmented = aug_funct(torch.from_numpy(img_hs),
                                  torch.from_numpy(tile_gt[None, :, :]))
     print(img_augmented.shape)
     img_augmented_np = np.array(img_augmented)
     img_aug_trans = img_augmented_np[0, [25, 15, 5], :, :].transpose(1, 2, 0)
 
-    _image_show(np.array(img_aug_trans)*3000, title='Augmented RGB composite')
+    _image_show(np.array(img_aug_trans)*20000, title='Augmented RGB composite')
 
-    plt.subplot(1, 3, 3)
+    plt.subplot(1, 4, 3)
     _class_show(tile_gt, 'Original reference data')
 
     for label, color in zip(CLASS_NAMES, COLOR_LIST):
         plt.plot(0, 0, 's', label=label,
                  color=color, markeredgecolor='black')
-    plt.legend()
+    plt.subplot(1, 4, 4)
+    _class_show(np.array(gt_augmented[0,:,:]), 'Augmented reference data')
+    #plt.legend()
+
+def show_augment_spectro_spatial(tile_dict, tile_num, aug_funct):
+    """Show a figure of the original and the augmented RGB composite."""
+    img_rgb = tile_dict['imagery'][tile_num, 0, [25, 15, 5], :, :]
+    img_rgb_transposed = img_rgb.transpose((1, 2, 0))
+    tile_gt = tile_dict['reference'][tile_num, :, :]
+    plt.figure(figsize=[20, 5])
+
+    plt.subplot(1, 4, 1)
+    _image_show(img_rgb_transposed*20000, title='Original RGB composite')
+
+    plt.subplot(1, 4, 2)
+    img_hs = tile_dict['imagery'][tile_num, 0, :, :, :]
+    img_augmented, gt_augmented = aug_funct(torch.from_numpy(img_hs),
+                                 torch.from_numpy(tile_gt[None, :, :]))
+    print(img_augmented.shape)
+    img_augmented_np = np.array(img_augmented)
+    img_aug_trans = img_augmented_np[0, 0, [25, 15, 5], :, :].transpose(1, 2, 0)
+
+    _image_show(np.array(img_aug_trans)*20000, title='Augmented RGB composite')
+
+    plt.subplot(1, 4, 3)
+    _class_show(tile_gt, 'Original reference data')
+
+    for label, color in zip(CLASS_NAMES, COLOR_LIST):
+        plt.plot(0, 0, 's', label=label,
+                 color=color, markeredgecolor='black')
+
+    plt.subplot(1, 4, 4)
+    _class_show(np.array(gt_augmented[0,:,:]), 'Augmented reference data')
+    #plt.legend()
 
 
 def show_classified(hs_img, gt_img, class_img):
