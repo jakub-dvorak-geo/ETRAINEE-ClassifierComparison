@@ -1,59 +1,30 @@
-# Instalace a příprava prostředí
+# Hyperspectral data classification using 1D, 2D and 3D CNNs
+> Short blurb about what your product does.
 
-V tomto návodu je popsána příprava pro Windows. Pro MacOS/Linux lze postupovat obdobně, pouze může být nutné zvolit jiný postup pro instalaci GDAL API pro Python.
+One to two paragraph statement about your product and what it does.
 
-Celkově lze přípravu rozdělit na několik částí, jestliže už máte nějaké zkušenosti s prací v Pythonu, můžete pravděpodobně přeskočit k instalaci PyTorch:
 
-- Instalace Pythonu
-- Nastavení virtuálního prostředí (volitelné)
-- Instalace PyTorch
-- Instalace GDAL API pro Python
-- Instalace zbývajících externích knihoven
-- Spuštění prostředí Jupyter notebook
+## Installation
 
-## Instalace Pythonu
-Nutná pouze pokud již nemáte vhodný Python. Toto lze vyzkoušet otevřením příkazové řadky a spuštěním příkazu
-```sh
-python
-```
-nebo
-```sh
-python3
-```
-Měl by se spustit Python 3, podobně jako na obrázku:
+The installation process for Windows consists of multiple subprocesses. If you already have some experience with Python, you may likely skip to installing external libraries:
+- Python installation
+- Opening the command line
+- Virtual environment setup (optional)
+- Installing most external libraries
+- Installing GDAL Python API
+- Installing PyTorch
 
-![Python spuštěný v příkazové řádce](img/cli_python3.png "Python spuštěný v příkazové řádce")
+### Python installation
+If you don't already have a suitable Python installation, we recommend installing miniconda with Python 3.9 from [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html).
 
-Jestliže Python ve verzi 3 ještě nemáte, doporučujeme ho nainstalovat skrze balíček miniconda s Python ve verzi 3.9 z webu [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html).
+### Opening the command line
+In order to install the external libraries and run jupyter notebooks, we need to open a command line. Some of you may already have different Python installations, which .
 
-## Nastavení virtuálního prostředí (volitelné)
-V případě že pracujete na více projektech, doporučujeme vytvořit si pro tento kurz samostatné virtuální prostředí. Zabráníte tím tomu, aby ve vašem prostředí vznikl nepořádek, nebo dokonce konflikt mezi některými knihovnami. Nejde o nutný krok, ovšem v případě potřeby můžete virtuální prostředí jednoduše vytvořit prostřednictvím balíčku [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands) nebo [venv](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/).
+### Virtual environment setup (optional)
+We recommend creating a new Python virtual environment for this project, so your other environments don't become cluttered. While this is not strictly necessary, virtual environments can be created using either [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands) or [venv](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/).
 
-## Instalace PyTorch
-Vhodný příkaz pro instalaci knihovny PyTorch lze vybrat na [PyTorch webu](https://pytorch.org/get-started/locally/) v závislosti na komponentech Vašeho počítače:
-
-* Jestliže si nejste jistí vlastnostmi svého počítače, případně jestli nemáte grafickou kartu od firmy Nvidia, pak vyberte v poli _Compute Platform_ hodnotu `CPU`.
-Například nejnovější verzi Pytorch v době psaní tohoto návodu lze nainstalovat příkazem
-```sh
-conda install pytorch torchvision torchaudio cpuonly -c pytorch
-```
-
-* Jestliže máte grafickou kartu Nvidia kompatibilní s technologií CUDA, pak ji můžete využít pro urychlení běhu neuronových sítí. K tomu je třeba zvolit při zjišťování vhodného příkazu v poli _Compute Platform_ hodnotu `CUDA <verze>`, například nejnovější PyTorch s CUDA ve verzi 11.3 lze nainstalovat příkazem
-```sh
-conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
-```
-
-## Installing GDAL API pro Python
-V závislosti na Vašem oblíbeném správci balíčků nainstalujte GDAL s pomocí jednoho z těchto návodů:
-
-pip - [https://opensourceoptions.com/blog/how-to-install-gdal-for-python-with-pip-on-windows/](https://opensourceoptions.com/blog/how-to-install-gdal-for-python-with-pip-on-windows/)
-
-nebo
-
-conda - [https://opensourceoptions.com/blog/how-to-install-gdal-with-anaconda/](https://opensourceoptions.com/blog/how-to-install-gdal-with-anaconda/)
-
-## Instalace zbývajících externích knihoven
-Pravděpodobně se Vám s předchozími balíčky nenainstalovaly tyto knihovny potřebné pro správné fungování kódu:
+### Installing most external libraries
+Required Python libraries are:
 - matplotlib
 - sklearn
 - torchnet
@@ -61,24 +32,34 @@ Pravděpodobně se Vám s předchozími balíčky nenainstalovaly tyto knihovny 
 - tqdm
 - ipywidgets
 
-Všechny prosím nainstalujte jedním z těchto příkazů:
+Most can be installed only using either
 
 ```sh
-pip install <název knihovny>
+pip install <library name>
 ```
-nebo
+or
 ```sh
-conda install <název knihovny>
+conda install <library name>
 ```
+However, two of the libraries require a slightly different installation process:
 
-## Spuštění prostředí Jupyter notebook
-Prostředí juptyter notebook lze opět spustit skrze příkazovou řádku a to příkazem
-```sh
-jupyter notebook
-```
+### Installing GDAL Python API
+Based on your preferred Python package manager, install GDAL either through
 
-Na některých počítačích se rovnou spustí prohlížeč s běžícím prostředím jupyter notebook, v některých případech je ovšem nutné spustit prohlížeč samostatně a vložit do něj adresu vygenerovanou v příkazové řádce:
+pip - [https://opensourceoptions.com/blog/how-to-install-gdal-for-python-with-pip-on-windows/](https://opensourceoptions.com/blog/how-to-install-gdal-for-python-with-pip-on-windows/)
 
-![Spuštění Jupyter notebooku v příkazové řádce](img/cli_jupyter.png "Spuštění Jupyter notebooku v příkazové řádce")
+or
 
-Poté v prohlížeči přejdete do složky s uloženými soubory _.ipynb_ a spustíte je.
+conda - [https://opensourceoptions.com/blog/how-to-install-gdal-with-anaconda/](https://opensourceoptions.com/blog/how-to-install-gdal-with-anaconda/)
+
+### Installing PyTorch
+Suitable command for PyTorch installation should be selected on the [PyTorch website](https://pytorch.org/get-started/locally/) based on if your computer has a GPU by Nvidia:
+* If you have a Nvidia CUDA-capable GPU then you can install _CUDA toolkit_ and _CuDNN_ from the [Nvidia website](https://developer.nvidia.com/cuda-toolkit), you need to sign up for 'NVIDIA Developer Program' in order to download CuDNN (check the PyTorch website first, so you install an appropriate version of _CUDA_ and _CuDNN_). After successfully installing _CUDA toolkit_ and _CuDNN_, install PyTorch using the command from the [PyTorch website](https://pytorch.org/get-started/locally/). All models were tested with Python 3.9, CUDA version 10.1, CuDNN 7.6 and PyTorch 1.8.1.
+* If you do not have a CUDA-capable Nvidia GPU, you can simply use PyTorch on the CPU, by selecting `CPU` in the _Compute Platform_ field on the [PyTorch website](https://pytorch.org/get-started/locally/). All models were tested with Python 3.9 and PyTorch 1.10.2.
+
+
+## Usage example
+
+A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
+
+_For more examples and usage, please refer to the documentation._

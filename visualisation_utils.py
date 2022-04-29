@@ -15,6 +15,8 @@ CLASS_NAMES = ['No Data', 'metlička křivolaká',
                'brusnice borůvková', 'metlice trsnatá',
                'borovice kleč', 'smilka tuhá', 'kamenná moře bez vegetace',
                'vřes obecný', 'kameny, půda, mechy a vegetace']
+CLASS_NAMES = ('Water', 'Trees', 'Asphalt', 'Self-Blocking Bricks',
+               'Bitumen', 'Tiles', 'Shadows', 'Meadows', 'Bare Soil')
 
 
 def _image_show(raster, title='Natural color composite'):
@@ -106,7 +108,6 @@ def show_augment_spatial(tile_dict, tile_num, aug_funct):
     for label, color in zip(CLASS_NAMES, COLOR_LIST):
         plt.plot(0, 0, 's', label=label,
                  color=color, markeredgecolor='black')
-
     plt.subplot(1, 4, 4)
     _class_show(np.array(gt_augmented[0,:,:]), 'Augmented reference data')
     #plt.legend()
