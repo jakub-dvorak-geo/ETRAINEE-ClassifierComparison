@@ -10,11 +10,13 @@ COLOR_LIST = ['white', 'red', 'green', 'yellow', 'orange', 'pink',
 CMAP = ListedColormap(COLOR_LIST)
 CLASS_NAMES = ['No Data', 'af', 'afs', 'bor', 'desch', 'klec', 'nard', 'sut',
                'vres', 'vyfuk']
-CLASS_NAMES = ['No Data', 'vyfoukávané alpinské trávníky',
-               'vyfoukávané alpinské trávníky',
-               'subalpínská brusnicová vegetace', 'metlice trsnatá',
-               'kosodřevina', 'smilka tuhá', 'kamenná moře',
-               'alpínská vřesoviště', 'vyfoukávané alpinské trávníky']
+CLASS_NAMES = ['No Data', 'metlička křivolaká',
+               'metlička, tomka a ostřice',
+               'brusnice borůvková', 'metlice trsnatá',
+               'borovice kleč', 'smilka tuhá', 'kamenná moře bez vegetace',
+               'vřes obecný', 'kameny, půda, mechy a vegetace']
+CLASS_NAMES = ('Water', 'Trees', 'Asphalt', 'Self-Blocking Bricks',
+               'Bitumen', 'Tiles', 'Shadows', 'Meadows', 'Bare Soil')
 
 
 def _image_show(raster, title='Natural color composite'):
@@ -43,7 +45,7 @@ def show_img_ref(hs_img, gt_img):
     for label, color in zip(CLASS_NAMES, COLOR_LIST):
         plt.plot(0, 0, 's', label=label,
                  color=color, markeredgecolor='black')
-    plt.legend()
+    plt.legend(ncol=3)
 
 
 def show_spectral_curve(tile_dict, tile_num,
