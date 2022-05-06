@@ -7,6 +7,8 @@ from time import gmtime, strftime
 
 COLOR_LIST = ['white', 'red', 'green', 'yellow', 'orange', 'pink',
               'blue', 'cyan', 'black', 'grey']
+COLOR_LIST = ('white', 'blue', 'green', 'olive', 'red',
+              'yellow', 'grey', 'cyan', 'orange', 'black')
 CMAP = ListedColormap(COLOR_LIST)
 CLASS_NAMES = ['No Data', 'af', 'afs', 'bor', 'desch', 'klec', 'nard', 'sut',
                'vres', 'vyfuk']
@@ -15,8 +17,8 @@ CLASS_NAMES = ['No Data', 'metlička křivolaká',
                'brusnice borůvková', 'metlice trsnatá',
                'borovice kleč', 'smilka tuhá', 'kamenná moře bez vegetace',
                'vřes obecný', 'kameny, půda, mechy a vegetace']
-CLASS_NAMES = ('Water', 'Trees', 'Asphalt', 'Self-Blocking Bricks',
-               'Bitumen', 'Tiles', 'Shadows', 'Meadows', 'Bare Soil')
+CLASS_NAMES = ('No Data', 'Water', 'Trees', 'Meadows', 'Self-Blocking Bricks',
+               'Bare Soil', 'Asphalt', 'Bitumen', 'Tiles', 'Shadows')
 
 
 def _image_show(raster, title='Natural color composite'):
@@ -28,7 +30,8 @@ def _image_show(raster, title='Natural color composite'):
 
 def _class_show(raster, title):
     """Show a figure based on a classification."""
-    plt.imshow(raster, cmap=CMAP)
+    C_MAP = ListedColormap(COLOR_LIST, N = max(np.unique(raster)))
+    plt.imshow(raster, cmap=C_MAP, interpolation='nearest')
     # plt.colorbar(ticks=(np.linspace(0.5, 8.5, 10)))
     plt.title(title)
     plt.axis('off')
@@ -50,8 +53,8 @@ def show_img_ref(hs_img, gt_img):
 
 def show_spectral_curve(tile_dict, tile_num,
                         title='Spectral curve for pixel #'):
-    """Show a figure of the spectal curve."""
-    x = np.linspace(404, 997, num=54)
+    """Show a figure of the spectral curve."""
+    x = np.linspace(404, 997, tile_dict["imagery"].shape[-1])
     if len(tile_dict["imagery"].shape) == 4:
         y = tile_dict["imagery"][tile_num, 0, 0, :]
         lbl = tile_dict["reference"][tile_num, 0, 0, :][0] + 1

@@ -129,8 +129,9 @@ def export_result(out_path, arr, geoinfo):
     out_ds = driver.Create(out_path, xsize=arr.shape[1], ysize=arr.shape[0],
                            bands=1, eType=gdal.GDT_Byte,
                            options=['COMPRESS=LZW'])
-    out_ds.SetGeoTransform(geoinfo['geotransform'])
-    out_ds.SetProjection(geoinfo['projection'])
+    if geoinfo:
+        out_ds.SetGeoTransform(geoinfo['geotransform'])
+        out_ds.SetProjection(geoinfo['projection'])
     out_ds.GetRasterBand(1).WriteArray(arr)
     out_ds = None
     print('Exported succesfully')
