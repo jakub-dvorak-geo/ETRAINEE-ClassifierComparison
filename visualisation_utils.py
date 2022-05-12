@@ -51,10 +51,20 @@ def show_img_ref(hs_img, gt_img):
     plt.legend(ncol=3)
 
 
-def show_spectral_curve(tile_dict, tile_num,
+def show_spectral_curve(tile_dict, tile_num, dataset='pavia_centre',
                         title='Spectral curve for pixel #'):
     """Show a figure of the spectral curve."""
-    x = np.linspace(404, 997, tile_dict["imagery"].shape[-1])
+    # Choose a range of collected wavelengths
+    if dataset == 'lucni_hora':
+        wl_min, wl_max = 404, 997
+        plt.xlabel('Wavelength [nm]')
+    else:
+        wl_min, wl_max = 1, tile_dict["imagery"].shape[-1] + 1
+        plt.xlabel('Band number')
+    # Create a vector of wavelength values
+    x = np.linspace(wl_min, wl_max, tile_dict["imagery"].shape[-1])
+
+    # Read the spectral curve
     if len(tile_dict["imagery"].shape) == 4:
         y = tile_dict["imagery"][tile_num, 0, 0, :]
         lbl = tile_dict["reference"][tile_num, 0, 0, :][0] + 1
@@ -66,7 +76,6 @@ def show_spectral_curve(tile_dict, tile_num,
 
     plt.plot(x, y, label=f'{CLASS_NAMES[lbl]}')
     plt.title(f'{title} {tile_num}')
-    plt.xlabel('Wavelength [nm]')
     plt.legend(bbox_to_anchor=(0.5, 0.89), loc='lower center')
 
 
