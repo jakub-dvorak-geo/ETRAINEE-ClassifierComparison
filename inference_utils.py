@@ -32,6 +32,7 @@ def combine_tiles_1d(model, data, t_shp, overlap, out_dims):
         ymin = idx % tiles_num[1]
         out_arr[xmin:xmin+1, ymin:ymin+1] = tile_class
 
+    out_arr = np.add(out_arr, 1)
     print('Largest index is:', tiles_num[0] * tiles_num[1] - 1)
     return out_arr
 

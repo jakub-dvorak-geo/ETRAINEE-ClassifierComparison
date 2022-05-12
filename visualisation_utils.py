@@ -28,10 +28,9 @@ def _image_show(raster, title='Natural color composite'):
     plt.axis('off')
 
 
-def _class_show(raster, title):
+def _class_show(raster, title, c_map=CMAP):
     """Show a figure based on a classification."""
-    C_MAP = ListedColormap(COLOR_LIST, N = max(np.unique(raster)))
-    plt.imshow(raster, cmap=C_MAP, interpolation='nearest')
+    plt.imshow(raster, cmap=c_map, interpolation='nearest')
     # plt.colorbar(ticks=(np.linspace(0.5, 8.5, 10)))
     plt.title(title)
     plt.axis('off')
@@ -171,7 +170,8 @@ def show_classified(hs_img, gt_img, class_img):
     plt.legend()
 
     plt.subplot(1, 3, 3)
-    _class_show(class_img, 'Classified data')
+    _class_show(class_img, 'Classified data',
+        c_map=ListedColormap(COLOR_LIST[1:]))
 
 
 def sec_to_hms(sec):
