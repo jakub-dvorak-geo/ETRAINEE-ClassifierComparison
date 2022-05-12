@@ -7,6 +7,8 @@ from time import gmtime, strftime
 
 COLOR_LIST = ['white', 'red', 'green', 'yellow', 'orange', 'pink',
               'blue', 'cyan', 'black', 'grey']
+COLOR_LIST = ('white', 'blue', 'green', 'olive', 'red',
+              'yellow', 'grey', 'cyan', 'orange', 'black')
 CMAP = ListedColormap(COLOR_LIST)
 CLASS_NAMES = ['No Data', 'af', 'afs', 'bor', 'desch', 'klec', 'nard', 'sut',
                'vres', 'vyfuk']
@@ -15,8 +17,8 @@ CLASS_NAMES = ['No Data', 'metlička křivolaká',
                'brusnice borůvková', 'metlice trsnatá',
                'borovice kleč', 'smilka tuhá', 'kamenná moře bez vegetace',
                'vřes obecný', 'kameny, půda, mechy a vegetace']
-CLASS_NAMES = ('Water', 'Trees', 'Asphalt', 'Self-Blocking Bricks',
-               'Bitumen', 'Tiles', 'Shadows', 'Meadows', 'Bare Soil')
+CLASS_NAMES = ('No Data', 'Water', 'Trees', 'Meadows', 'Self-Blocking Bricks',
+               'Bare Soil', 'Asphalt', 'Bitumen', 'Tiles', 'Shadows')
 
 
 def _image_show(raster, title='Natural color composite'):
@@ -26,9 +28,9 @@ def _image_show(raster, title='Natural color composite'):
     plt.axis('off')
 
 
-def _class_show(raster, title):
+def _class_show(raster, title, c_map=CMAP):
     """Show a figure based on a classification."""
-    plt.imshow(raster, cmap=CMAP)
+    plt.imshow(raster, cmap=c_map, interpolation='nearest')
     # plt.colorbar(ticks=(np.linspace(0.5, 8.5, 10)))
     plt.title(title)
     plt.axis('off')
@@ -48,10 +50,20 @@ def show_img_ref(hs_img, gt_img):
     plt.legend(ncol=3)
 
 
-def show_spectral_curve(tile_dict, tile_num,
+def show_spectral_curve(tile_dict, tile_num, dataset='pavia_centre',
                         title='Spectral curve for pixel #'):
-    """Show a figure of the spectal curve."""
-    x = np.linspace(404, 997, num=54)
+    """Show a figure of the spectral curve."""
+    # Choose a range of collected wavelengths
+    if dataset == 'lucni_hora':
+        wl_min, wl_max = 404, 997
+        plt.xlabel('Wavelength [nm]')
+    else:
+        wl_min, wl_max = 1, tile_dict["imagery"].shape[-1] + 1
+        plt.xlabel('Band number')
+    # Create a vector of wavelength values
+    x = np.linspace(wl_min, wl_max, tile_dict["imagery"].shape[-1])
+
+    # Read the spectral curve
     if len(tile_dict["imagery"].shape) == 4:
         y = tile_dict["imagery"][tile_num, 0, 0, :]
         lbl = tile_dict["reference"][tile_num, 0, 0, :][0] + 1
@@ -63,7 +75,6 @@ def show_spectral_curve(tile_dict, tile_num,
 
     plt.plot(x, y, label=f'{CLASS_NAMES[lbl]}')
     plt.title(f'{title} {tile_num}')
-    plt.xlabel('Wavelength [nm]')
     plt.legend(bbox_to_anchor=(0.5, 0.89), loc='lower center')
 
 
@@ -159,7 +170,8 @@ def show_classified(hs_img, gt_img, class_img):
     plt.legend()
 
     plt.subplot(1, 3, 3)
-    _class_show(class_img, 'Classified data')
+    _class_show(class_img, 'Classified data',
+        c_map=ListedColormap(COLOR_LIST[1:]))
 
 
 def sec_to_hms(sec):

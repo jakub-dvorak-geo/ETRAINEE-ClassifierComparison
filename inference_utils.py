@@ -32,6 +32,7 @@ def combine_tiles_1d(model, data, t_shp, overlap, out_dims):
         ymin = idx % tiles_num[1]
         out_arr[xmin:xmin+1, ymin:ymin+1] = tile_class
 
+    out_arr = np.add(out_arr, 1)
     print('Largest index is:', tiles_num[0] * tiles_num[1] - 1)
     return out_arr
 
@@ -129,8 +130,9 @@ def export_result(out_path, arr, geoinfo):
     out_ds = driver.Create(out_path, xsize=arr.shape[1], ysize=arr.shape[0],
                            bands=1, eType=gdal.GDT_Byte,
                            options=['COMPRESS=LZW'])
-    out_ds.SetGeoTransform(geoinfo['geotransform'])
-    out_ds.SetProjection(geoinfo['projection'])
+    if geoinfo:
+        out_ds.SetGeoTransform(geoinfo['geotransform'])
+        out_ds.SetProjection(geoinfo['projection'])
     out_ds.GetRasterBand(1).WriteArray(arr)
     out_ds = None
     print('Exported succesfully')

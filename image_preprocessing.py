@@ -1,6 +1,7 @@
 """Preprocess imagery in RAM for use in convolutional neural nets."""
 import numpy as np
 from osgeo import gdal
+from scipy.io import loadmat
 
 
 class Image_reader:
@@ -143,6 +144,27 @@ def read_gdal_with_geoinfo(trainingdata_path, offset):
     raster_orig = None
 
     arr_dict = {'imagery': raster_orig_arr, 'geoinfo': raster_orig_geoinfo}
+    return arr_dict
+
+
+def read_pavia_centre(train_path, ref_path=None, out_shape=(1096, 1096, 102)):
+
+    raster_orig = loadmat(train_path)
+    raster_orig_arr = raster_orig['pavia']
+    imagery = np.zeros(out_shape, dtype=np.uint16)
+    imagery[:, :223, :] = raster_orig_arr[:out_shape[0], :223, :out_shape[2]]
+    imagery[:, 605-(1096-out_shape[1]):, :] = raster_orig_arr[:out_shape[0], 224:, :out_shape[2]]
+    arr_dict = {'imagery': imagery}
+
+    if ref_path is not None:
+        raster_gt = loadmat(ref_path)
+        raster_gt_arr = raster_gt['pavia_gt'][:, :, None]
+        reference = np.zeros([out_shape[0], out_shape[1], 1], dtype=np.uint8)
+        reference[:, :223, :] = raster_gt_arr[:out_shape[0], :223, :]
+        reference[:, 605-(1096-out_shape[1]):, :] = raster_gt_arr[:out_shape[0], 224:, :]
+        arr_dict['reference'] = reference
+
+    arr_dict['geoinfo'] = {}
     return arr_dict
 
 
