@@ -5,20 +5,34 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from time import gmtime, strftime
 
-COLOR_LIST = ['white', 'red', 'green', 'yellow', 'orange', 'pink',
-              'blue', 'cyan', 'black', 'grey']
-COLOR_LIST = ('white', 'blue', 'green', 'olive', 'red',
+
+def _create_colorlist_classnames(arr=None, ds_name='pavia_centre'):
+	"""Return correct colormap and class names for plotting."""
+	if ds_name == 'pavia_centre':
+		color_list = ('white', 'blue', 'green', 'olive', 'red',
               'yellow', 'grey', 'cyan', 'orange', 'black')
-CMAP = ListedColormap(COLOR_LIST)
-CLASS_NAMES = ['No Data', 'af', 'afs', 'bor', 'desch', 'klec', 'nard', 'sut',
-               'vres', 'vyfuk']
-CLASS_NAMES = ['No Data', 'metlička křivolaká',
-               'metlička, tomka a ostřice',
-               'brusnice borůvková', 'metlice trsnatá',
-               'borovice kleč', 'smilka tuhá', 'kamenná moře bez vegetace',
-               'vřes obecný', 'kameny, půda, mechy a vegetace']
-CLASS_NAMES = ('No Data', 'Water', 'Trees', 'Meadows', 'Self-Blocking Bricks',
-               'Bare Soil', 'Asphalt', 'Bitumen', 'Tiles', 'Shadows')
+		class_names = ('No Data', 'Water', 'Trees', 'Meadows', 'Self-Blocking Bricks',
+			'Bare Soil', 'Asphalt', 'Bitumen', 'Tiles', 'Shadows')
+
+	elif ds_name == 'krkonose':
+		color_list = ('white', 'red', 'green', 'yellow', 'orange', 'pink',
+            'blue', 'cyan', 'black', 'grey')
+		class_names = ('No Data', 'metlička křivolaká',
+            'metlička, tomka a ostřice',
+            'brusnice borůvková', 'metlice trsnatá',
+            'borovice kleč', 'smilka tuhá', 'kamenná moře bez vegetace',
+            'vřes obecný', 'kameny, půda, mechy a vegetace')
+	else:
+		print('Incorrect dataset name for creating a plot. Cannot create a colormap and a list of class names.')
+
+	if not arr.any():
+		return color_list, class_names
+
+	elif arr.any():
+		arr_min, arr_max = np.min(arr), np.max(arr)
+		out_cmap = color_list[arr_min:arr_max]
+		out_class_names = class_names[arr_min:arr_max]
+		return out_cmap, out_class_names
 
 
 def _image_show(raster, title='Natural color composite'):
@@ -28,33 +42,35 @@ def _image_show(raster, title='Natural color composite'):
     plt.axis('off')
 
 
-def _class_show(raster, title, c_map=CMAP):
+def _class_show(raster, title, ds_name='pavia_centre'):
     """Show a figure based on a classification."""
-    plt.imshow(raster, cmap=c_map, interpolation='nearest')
+    colorlist, classnames = _create_colorlist_classnames(raster, ds_name=ds_name)
+    for label, color in zip(classnames, colorlist):
+        plt.plot(0, 0, 's', label=label, alpha=1,
+                 color=color, markeredgecolor='black')
+
+    plt.imshow(raster, cmap=ListedColormap(colorlist), interpolation='nearest')
     # plt.colorbar(ticks=(np.linspace(0.5, 8.5, 10)))
     plt.title(title)
     plt.axis('off')
+    # plt.legend()
 
 
-def show_img_ref(hs_img, gt_img):
+def show_img_ref(hs_img, gt_img, ds_name='pavia_centre'):
     """Show the hyperspectral image and a training reference."""
     plt.figure(figsize=[16, 8])
     plt.subplot(1, 2, 1)
     _image_show(hs_img)
     plt.subplot(1, 2, 2)
-    _class_show(gt_img, 'Reference data')
-
-    for label, color in zip(CLASS_NAMES, COLOR_LIST):
-        plt.plot(0, 0, 's', label=label,
-                 color=color, markeredgecolor='black')
-    plt.legend(ncol=3)
+    _class_show(gt_img, 'Reference data', ds_name=ds_name)
+    plt.legend(ncol=3, bbox_to_anchor=(0.5, -0.15), loc='lower center')
 
 
-def show_spectral_curve(tile_dict, tile_num, dataset='pavia_centre',
+def show_spectral_curve(tile_dict, tile_num, ds_name='pavia_centre',
                         title='Spectral curve for pixel #'):
     """Show a figure of the spectral curve."""
     # Choose a range of collected wavelengths
-    if dataset == 'lucni_hora':
+    if ds_name == 'lucni_hora':
         wl_min, wl_max = 404, 997
         plt.xlabel('Wavelength [nm]')
     else:
@@ -73,7 +89,8 @@ def show_spectral_curve(tile_dict, tile_num, dataset='pavia_centre',
     else:
         print('The input data is in an incompatible shape.')
 
-    plt.plot(x, y, label=f'{CLASS_NAMES[lbl]}')
+    _, classnames = _create_colorlist_classnames(ds_name=ds_name)
+    plt.plot(x, y, label=f'{classnames[lbl]}')
     plt.title(f'{title} {tile_num}')
     plt.legend(bbox_to_anchor=(0.5, 0.89), loc='lower center')
 
@@ -93,7 +110,7 @@ def show_augment_spectral(tile_dict, tile_num, aug_funct):
                         title='Augmented spectral curve for pixel #')
 
 
-def show_augment_spatial(tile_dict, tile_num, aug_funct):
+def show_augment_spatial(tile_dict, tile_num, aug_funct, ds_name = 'pavia_centre'):
     """Show a figure of the original and the augmented RGB composite."""
     img_rgb = tile_dict['imagery'][tile_num, [25, 15, 5], :, :]
     img_rgb_transposed = img_rgb.transpose((1, 2, 0))
@@ -114,16 +131,13 @@ def show_augment_spatial(tile_dict, tile_num, aug_funct):
     _image_show(np.array(img_aug_trans)*20000, title='Augmented RGB composite')
 
     plt.subplot(1, 4, 3)
-    _class_show(tile_gt, 'Original reference data')
+    _class_show(tile_gt, 'Original reference data', ds_name=ds_name)
+    plt.legend(ncol=3, bbox_to_anchor=(0.5, -0.15), loc='lower center')
 
-    for label, color in zip(CLASS_NAMES, COLOR_LIST):
-        plt.plot(0, 0, 's', label=label,
-                 color=color, markeredgecolor='black')
     plt.subplot(1, 4, 4)
-    _class_show(np.array(gt_augmented[0,:,:]), 'Augmented reference data')
-    #plt.legend()
+    _class_show(np.array(gt_augmented[0,:,:]), 'Augmented reference data', ds_name=ds_name)
 
-def show_augment_spectro_spatial(tile_dict, tile_num, aug_funct):
+def show_augment_spectro_spatial(tile_dict, tile_num, aug_funct, ds_name = 'pavia_centre'):
     """Show a figure of the original and the augmented RGB composite."""
     img_rgb = tile_dict['imagery'][tile_num, 0, [25, 15, 5], :, :]
     img_rgb_transposed = img_rgb.transpose((1, 2, 0))
@@ -144,34 +158,27 @@ def show_augment_spectro_spatial(tile_dict, tile_num, aug_funct):
     _image_show(np.array(img_aug_trans)*20000, title='Augmented RGB composite')
 
     plt.subplot(1, 4, 3)
-    _class_show(tile_gt, 'Original reference data')
-
-    for label, color in zip(CLASS_NAMES, COLOR_LIST):
-        plt.plot(0, 0, 's', label=label,
-                 color=color, markeredgecolor='black')
+    _class_show(tile_gt, 'Original reference data', ds_name=ds_name)
+    plt.legend(ncol=3)
 
     plt.subplot(1, 4, 4)
-    _class_show(np.array(gt_augmented[0,:,:]), 'Augmented reference data')
-    #plt.legend()
+    _class_show(np.array(gt_augmented[0,:,:]), 'Augmented reference data',
+		ds_name=ds_name)
 
 
-def show_classified(hs_img, gt_img, class_img):
+def show_classified(hs_img, gt_img, class_img, ds_name='pavia_centre'):
     """Compare the classification result to the reference data."""
     plt.figure(figsize=[15, 5])
     plt.subplot(1, 3, 1)
     _image_show(hs_img)
 
     plt.subplot(1, 3, 2)
-    _class_show(gt_img, 'Reference data')
-
-    for label, color in zip(CLASS_NAMES, COLOR_LIST):
-        plt.plot(0, 0, 's', label=label,
-                 color=color, markeredgecolor='black')
-    plt.legend()
+    _class_show(gt_img, 'Reference data', ds_name=ds_name)
+    plt.legend(ncol=3)
 
     plt.subplot(1, 3, 3)
     _class_show(class_img, 'Classified data',
-        c_map=ListedColormap(COLOR_LIST[1:]))
+        ds_name=ds_name)
 
 
 def sec_to_hms(sec):
