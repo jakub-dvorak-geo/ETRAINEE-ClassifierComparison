@@ -1,7 +1,21 @@
 # 1D, 2D and 3D CNNs
-> Classify hyperspectral data using different Convolutional Neural Networks (CNNs).
+> Classify hyperspectral data using different Convolutional Neural Networks (CNNs), which use convolution in the spectral, spatial or in both spectral and spatial domains.
 
-One to two paragraph statement about your product and what it does.
+Utilization of convolutional neural networks (CNN) has been growing steeply in many fields, including remote
+sensing. At the same time, several textbooks and online learning materials have appeared. What is not so
+frequent or missing, are easy-to-use tools enabling practical experimentation with different designs of CNNs.
+The presented Classifier Comparison tool, implemented in Python, helps users understand 1D, 2D, and 3D
+(spectral, spatial and spectro-spatial) CNN architectures for classification of hyper- or multispectral images,
+while presenting a straightforward framework for building more complex networks.
+
+Target audience for our tool are MSc and PhD students, researchers and practitioners from public sector and
+industry in fields related to remote sensing and computer vision dealing with CNNs at a beginner level. We
+expect only a basic knowledge of CNN fundamentals, Python and Jupyter notebooks.
+
+The presented tool was developed within the ongoing project “E-learning course on Time Series Analysis in
+Remote Sensing for Understanding Human-Environment Interactions” (E-TRAINEE, ID 2020-1-CZ01-KA203-
+078308) funded by the Erasmus+ Strategic partnership programme. For details see the project homepage:
+[https://web.natur.cuni.cz/gis/etrainee/](https://web.natur.cuni.cz/gis/etrainee/)
 
 
 ## Installation
@@ -72,4 +86,4 @@ conda install <library name>
 
 A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
 
-_For more examples and usage, please refer to the documentation._
+Currently work in progress, sorry for the inconvenience.
