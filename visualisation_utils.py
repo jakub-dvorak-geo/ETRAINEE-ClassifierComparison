@@ -17,21 +17,29 @@ def _create_colorlist_classnames(arr=None, ds_name='pavia_centre'):
 	elif ds_name == 'krkonose':
 		color_list = ('white', 'red', 'green', 'yellow', 'orange', 'pink',
             'blue', 'cyan', 'black', 'grey')
-		class_names = ('No Data', 'metlička křivolaká',
+		class_names_short = ('No Data', 'af', 'afs', 'bor', 'desch', 'klec', 'nard', 'sut',
+            'vres', 'vyfuk')
+		class_names_cz = ('No Data', 'metlička křivolaká',
             'metlička, tomka a ostřice',
             'brusnice borůvková', 'metlice trsnatá',
             'borovice kleč', 'smilka tuhá', 'kamenná moře bez vegetace',
             'vřes obecný', 'kameny, půda, mechy a vegetace')
+		class_names = ('No Data', 'Grasslands dominated by Avenella flexuosa',
+			'Alpine connected grasslands', 'Vaccinium myrtillus',
+			'Deschampsia cespitosa', 'Pinus mugo', 'Nardus stricta',
+			'Blockfields', 'Calluna vulgaris',
+			'Mosaic of stone, soil, moss and vegetation')
 	else:
 		print('Incorrect dataset name for creating a plot. Cannot create a colormap and a list of class names.')
 
-	if not arr.any():
+	if arr is None:
 		return color_list, class_names
 
-	elif arr.any():
-		arr_min, arr_max = np.min(arr), np.max(arr)
+	elif arr is not None:
+		arr_min, arr_max = np.min(arr), np.max(arr) + 1
 		out_cmap = color_list[arr_min:arr_max]
 		out_class_names = class_names[arr_min:arr_max]
+		print(arr_min, arr_max)
 		return out_cmap, out_class_names
 
 
@@ -70,7 +78,7 @@ def show_spectral_curve(tile_dict, tile_num, ds_name='pavia_centre',
                         title='Spectral curve for pixel #'):
     """Show a figure of the spectral curve."""
     # Choose a range of collected wavelengths
-    if ds_name == 'lucni_hora':
+    if ds_name == 'krkonose':
         wl_min, wl_max = 404, 997
         plt.xlabel('Wavelength [nm]')
     else:
@@ -90,23 +98,23 @@ def show_spectral_curve(tile_dict, tile_num, ds_name='pavia_centre',
         print('The input data is in an incompatible shape.')
 
     _, classnames = _create_colorlist_classnames(ds_name=ds_name)
-    plt.plot(x, y, label=f'{classnames[lbl]}')
+    plt.plot(x, y, label=f'{classnames[lbl-1]}')
     plt.title(f'{title} {tile_num}')
     plt.legend(bbox_to_anchor=(0.5, 0.89), loc='lower center')
 
 
-def show_augment_spectral(tile_dict, tile_num, aug_funct):
+def show_augment_spectral(tile_dict, tile_num, aug_funct, ds_name='pavia_centre'):
     """Show a figure of the original spectal curve and the augmented curve."""
     plt.figure(figsize=[8, 4])
     plt.subplot(1, 2, 1)
-    show_spectral_curve(tile_dict, tile_num,
+    show_spectral_curve(tile_dict, tile_num, ds_name=ds_name,
                         title='Original spectral curve for pixel #')
     plt.subplot(1, 2, 2)
     tensor_obs = torch.from_numpy(tile_dict["imagery"])
     tensor_gt = torch.from_numpy(tile_dict["reference"])
     aug_obs, aug_gt = aug_funct(tensor_obs, tensor_gt)
     aug_dict = {'imagery': aug_obs, 'reference': aug_gt}
-    show_spectral_curve(aug_dict, tile_num,
+    show_spectral_curve(aug_dict, tile_num, ds_name=ds_name,
                         title='Augmented spectral curve for pixel #')
 
 
