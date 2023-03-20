@@ -15,24 +15,25 @@ def _create_colorlist_classnames(arr=None, ds_name='pavia_centre'):
 			'Bare Soil', 'Asphalt', 'Bitumen', 'Tiles', 'Shadows')
 
 	elif ds_name == 'krkonose':
-		color_list = ('white', 'red', 'green', 'yellow', 'orange', 'pink',
+		color_list = ('white', 'red', 'green', 'yellow', 'orange', 'purple',
             'blue', 'cyan', 'black', 'grey')
-		class_names = ('No Data', 'metlička křivolaká',
+		class_names = ('No Data', 'Metlička Křivolaká',
             'metlička, tomka a ostřice',
             'brusnice borůvková', 'metlice trsnatá',
             'borovice kleč', 'smilka tuhá', 'kamenná moře bez vegetace',
             'vřes obecný', 'kameny, půda, mechy a vegetace')
 	else:
 		print('Incorrect dataset name for creating a plot. Cannot create a colormap and a list of class names.')
+		print('Valid dataset names are "krkonose" or "pavia_centre".')
 
-	if not arr.any():
-		return color_list, class_names
-
-	elif arr.any():
+	if type(arr) is np.ndarray:
 		arr_min, arr_max = np.min(arr), np.max(arr)
-		out_cmap = color_list[arr_min:arr_max]
-		out_class_names = class_names[arr_min:arr_max]
+		out_cmap = color_list[arr_min:arr_max+1]
+		out_class_names = class_names[arr_min:arr_max+1]
 		return out_cmap, out_class_names
+
+	else:
+		return color_list, class_names
 
 
 def _image_show(raster, title='Natural color composite'):
@@ -70,7 +71,7 @@ def show_spectral_curve(tile_dict, tile_num, ds_name='pavia_centre',
                         title='Spectral curve for pixel #'):
     """Show a figure of the spectral curve."""
     # Choose a range of collected wavelengths
-    if ds_name == 'lucni_hora':
+    if ds_name == 'krkonose':
         wl_min, wl_max = 404, 997
         plt.xlabel('Wavelength [nm]')
     else:
@@ -86,31 +87,39 @@ def show_spectral_curve(tile_dict, tile_num, ds_name='pavia_centre',
     elif len(tile_dict["imagery"].shape) == 3:
         y = tile_dict["imagery"][tile_num, 0, :]
         lbl = tile_dict["reference"][tile_num] + 1
+    elif len(tile_dict["imagery"].shape) == 2:
+        y = tile_dict["imagery"][tile_num, :]
+        lbl = tile_dict["reference"][tile_num]
     else:
         print('The input data is in an incompatible shape.')
 
     _, classnames = _create_colorlist_classnames(ds_name=ds_name)
+
+    print(ds_name)
+    print(classnames)
+    print(lbl)
+
     plt.plot(x, y, label=f'{classnames[lbl]}')
     plt.title(f'{title} {tile_num}')
     plt.legend(bbox_to_anchor=(0.5, 0.89), loc='lower center')
 
 
-def show_augment_spectral(tile_dict, tile_num, aug_funct):
+def show_augment_spectral(tile_dict, tile_num, aug_funct, ds_name='pavia_centre'):
     """Show a figure of the original spectal curve and the augmented curve."""
     plt.figure(figsize=[8, 4])
     plt.subplot(1, 2, 1)
-    show_spectral_curve(tile_dict, tile_num,
+    show_spectral_curve(tile_dict, tile_num, ds_name=ds_name,
                         title='Original spectral curve for pixel #')
     plt.subplot(1, 2, 2)
     tensor_obs = torch.from_numpy(tile_dict["imagery"])
     tensor_gt = torch.from_numpy(tile_dict["reference"])
     aug_obs, aug_gt = aug_funct(tensor_obs, tensor_gt)
     aug_dict = {'imagery': aug_obs, 'reference': aug_gt}
-    show_spectral_curve(aug_dict, tile_num,
+    show_spectral_curve(aug_dict, tile_num, ds_name=ds_name,
                         title='Augmented spectral curve for pixel #')
 
 
-def show_augment_spatial(tile_dict, tile_num, aug_funct, ds_name = 'pavia_centre'):
+def show_augment_spatial(tile_dict, tile_num, aug_funct, ds_name='pavia_centre'):
     """Show a figure of the original and the augmented RGB composite."""
     img_rgb = tile_dict['imagery'][tile_num, [25, 15, 5], :, :]
     img_rgb_transposed = img_rgb.transpose((1, 2, 0))
