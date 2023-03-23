@@ -4,6 +4,7 @@ import torch
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from time import gmtime, strftime
+from sklearn.metrics import confusion_matrix
 
 
 def _create_colorlist_classnames(arr=None, ds_name='pavia_centre'):
@@ -95,10 +96,6 @@ def show_spectral_curve(tile_dict, tile_num, ds_name='pavia_centre',
 
     _, classnames = _create_colorlist_classnames(ds_name=ds_name)
 
-    print(ds_name)
-    print(classnames)
-    print(lbl)
-
     plt.plot(x, y, label=f'{classnames[lbl]}')
     plt.title(f'{title} {tile_num}')
     plt.legend(bbox_to_anchor=(0.5, 0.89), loc='lower center')
@@ -188,6 +185,32 @@ def show_classified(hs_img, gt_img, class_img, ds_name='pavia_centre'):
     plt.subplot(1, 3, 3)
     _class_show(class_img, 'Classified data',
         ds_name=ds_name)
+
+    
+def show_confusion_matrix(gt, predict, ds_name='pavia_centre'):
+    conf_matrix = confusion_matrix(gt, predict)
+    
+    fig, ax = plt.subplots(figsize=(7.5, 7.5))
+    ax.matshow(conf_matrix, cmap=plt.cm.hot_r, alpha=0.3)
+    # Add numbers to each position
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center')
+    
+    # Make it look good
+    ax.set_xlabel('Predicted labels')
+    ax.xaxis.set_label_position('top')
+    ax.set_ylabel('Reference labels')
+    ax.set_title('Confusion matrix')
+    
+    _, classnames = _create_colorlist_classnames(ds_name=ds_name)
+    ax.set_xticks(np.arange(len(classnames)-1))#, labels=classnames[0:])
+    ax.set_yticks(np.arange(len(classnames)-1))#, labels=classnames[0:])
+    ax.set_xticklabels(classnames[1:])
+    ax.set_yticklabels(classnames[1:])
+    ax.tick_params(axis='x', labelrotation=90)
+    
+    plt.show()
 
 
 def sec_to_hms(sec):

@@ -122,7 +122,7 @@ def read_gdal(trainingdata_path, referencedata_path):
     return arr_dict
 
 
-def read_gdal_with_geoinfo(trainingdata_path, offset):
+def read_gdal_with_geoinfo(trainingdata_path, offset=(0, 0)):
     """Read data using gdal and transform into numpy array."""
     def retrieve_geoinfo(img, offset):
         old_geot = img.GetGeoTransform()
@@ -186,7 +186,7 @@ def run_tiling_dims(in_arr, out_shape=(256, 256), out_overlap=128,
     return out_dict
 
 
-def tile_training(in_dict, shape, overlap, offset):
+def tile_training(in_dict, shape, overlap, offset=(0, 0)):
     """Tile the imagery for training."""
     tiled_imagery = run_tiling_dims(in_dict['imagery'], out_shape=shape,
                                     out_overlap=overlap, offset=offset)
