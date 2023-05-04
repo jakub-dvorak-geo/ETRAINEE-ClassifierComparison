@@ -204,10 +204,10 @@ def show_confusion_matrix(gt, predict, ds_name='pavia_centre'):
     ax.set_title('Confusion matrix')
 
     _, classnames = _create_colorlist_classnames(ds_name=ds_name)
-    ax.set_xticks(np.arange(len(classnames)-1))#, labels=classnames[0:])
-    ax.set_yticks(np.arange(len(classnames)-1))#, labels=classnames[0:])
-    ax.set_xticklabels(classnames[1:])
-    ax.set_yticklabels(classnames[1:])
+	classnames = classnames[-len(np.unique(predict)):]
+
+    ax.set_xticks(np.arange(len(classnames)), labels=classnames)
+    ax.set_yticks(np.arange(len(classnames)), labels=classnames)
     ax.tick_params(axis='x', labelrotation=90)
 
     plt.show()
